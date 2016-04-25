@@ -1,0 +1,207 @@
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-jsonp-library/iron-jsonp-library.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../google-chart/google-chart.html">
+<link rel="import" href="../byutv-jsonp/byutv-jsonp.html" />
+<dom-module id="ajax-example">
+
+  <style is="custom-style">
+    :host{
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: hidden;
+    }
+  .container {
+    position: absolute;;
+    width: auto;
+    height: 50%;
+    overflow: hidden;
+  }
+  iron-image{
+    width: 100%;
+    height: 50%;
+    position: absolute;
+  }
+  .detalle{
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    height: auto;
+    font-weight: bold;
+    color: white;
+    font-family: 'Roboto', 'Noto';
+    text-shadow: 5px 5px 5px black;
+  }
+  .titulo{
+    font-size: 3em;
+  }
+  .subtitulo{
+    font-size: 1em;
+  }
+  .more{
+    font-size: 2em;
+  }
+  span{
+    font-size: 5em;
+  }
+
+  </style>
+  <template>
+
+<!--
+<span id="datos">
+Total :{{datos_informativos}}
+</span><br>
+<span class="puertas">
+ Puerta 1: {{pUno}} <br>Puerta 3: {{pTres}} <br>Puerta 5: {{pCinco}} <br>Puerta 7: {{pSiete}}
+</span>
+-->
+
+    <byutv-jsonp
+        id="ajax"
+        auto
+        url="http://acreditacion.celina.com.bo/administrador/index.php/login/login/estadistica1?callback=?"
+        params='{"userId":"1"}'
+        on-response="getResponse"
+        sync
+        last-response="{{ajaxResponse}}"
+        >
+      </byutv-jsonp>
+      <div id="container" style="height: 400px; margin: 0 auto"></div>
+
+      <iron-image sizing="cover" preload src="../../images/people.jpg">
+      </iron-image>
+      <div class="detalle">
+        <div class="titulo">Expo 2016</div>
+        <div class="subtitulo">Santa Cruz de la Sierra</div>
+        <div class="more">Total personas:</div>
+        <span>{{datos_informativos}}</span>
+      </div>
+
+
+
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'ajax-example',
+    properties:{
+      datos_informativos: Number,
+      pUno : Number,
+      pTres : Number,
+      pCinco : Number,
+      pSiete : Number
+    },
+    ready: function(){
+      var aux = 0;
+      this.dynamic();
+      this.refresh();
+    },
+    getResponse: function(event){
+      var responses = event.detail.datos_informativos.total_general;
+      aux = responses;
+      this.datos_informativos = responses;
+      var pUno = event.detail.datos_grafica.p1;
+      var pTres = event.detail.datos_grafica.p3;
+      var pCinco = event.detail.datos_grafica.p5;
+      var pSiete = event.detail.datos_grafica.p7;
+
+
+      this.pUno = pUno;
+      this.pTres = pTres;
+      this.pCinco = pCinco;
+      this.pSiete = pSiete;
+
+
+    },
+    refresh: function(){
+         setInterval(function(){
+          this.ajax.generateRequest();
+        }, 3000);
+    },
+    dynamic: function(){
+      $(function () {
+          $(document).ready(function () {
+              Highcharts.setOptions({
+                  global: {
+                      useUTC: false
+                  }
+              });
+
+              $('#container').highcharts({
+                  chart: {
+                      type: 'spline',
+                      animation: Highcharts.svg, // don't animate in old IE
+                      marginRight: 10,
+                      events: {
+                          load: function () {
+
+                              // set up the updating of the chart each second
+
+
+                              var series = this.series[0];
+                              setInterval(function () {
+                                  var x = (new Date()).getTime(), // current time
+                                      y = aux;
+                                  series.addPoint([x, y], true, true);
+                              }, 1500);
+                          }
+                      }
+                  },
+                  title: {
+                      text: 'Expo 2016'
+                  },
+                  xAxis: {
+                      type: 'datetime',
+                      tickPixelInterval: 150
+                  },
+                  yAxis: {
+                      title: {
+                          text: 'Personas'
+                      },
+                      plotLines: [{
+                          value: 0,
+                          width: 1,
+                          color: '#808080'
+                      }]
+                  },
+                  tooltip: {
+                      formatter: function () {
+                          return '<b>' + this.series.name + '</b><br/>' +
+                              Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                              Highcharts.numberFormat(this.y, 2);
+                      }
+                  },
+                  legend: {
+                      enabled: true,
+                      align: 'left'
+                  },
+                  exporting: {
+                      enabled: false
+                  },
+                  series: [{
+                      name: 'Personas en la Expo',
+                      data: (function () {
+                          // generate an array of random data
+                          var data = [],
+                              time = (new Date()).getTime(),
+                              i;
+
+                          for (i = -19; i <= 0; i += 1) {
+                              data.push({
+                                  x: time + i * 1000,
+                                  y: Math.floor((Math.random() * 10000) + 1000)
+                              });
+                          }
+                          return data;
+                      }())
+                  }]
+              });
+          });
+      });
+    }
+
+  });
+</script>

@@ -1,0 +1,263 @@
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../byutv-jsonp/byutv-jsonp.html" />
+<link rel="import" href="../paper-style/paper-style.html" />
+<link href='https://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Lora:400,700' rel='stylesheet' type='text/css'>
+<dom-module id="chart-pie">
+  <style media="screen">
+    :host{
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: hidden;
+      color: #000;
+    }
+    #piecharts{
+      @apply(--layout-horizontal);
+      @apply(--layout-center-justified);
+      opacity:0.7;
+      width: 100%;
+      position:absolute;
+      height: auto;
+    }
+    .datos{
+      @apply(--layout-horizontal);
+      @apply(--layout-left-justified);
+      position: absolute;
+      text-align: center;
+      width: 100%;
+      height: auto;
+    }
+    .title span{
+      font-weight: lighter;
+      font-size: 0.8em;
+    }
+    .title{
+      text-align: left;
+      font-weight: lighter;
+      font-size: 3em;
+      color: white;
+      font-family: 'Lora', serif;
+    }
+    .puertas{
+      @apply(--layout-horizontal);
+      @apply(--layout-center-justified);
+      @apply(--layout-wrap);
+      position: absolute;
+      text-align: center;
+      height: auto;
+      width: 100%;
+      top: 50%;
+      color: #fff;
+    }
+    .puertas div{
+      margin: 35px;
+    }
+    .puertas h3{
+      font-size: 40px;
+      font-weight: lighter;
+      margin: 0px!important;
+      text-shadow: 1px 1px gray;
+    }
+    .puertas p{
+      font-size: 80px;
+      font-weight: bolder;
+      margin: 0px!important;
+      font-family: 'Roboto', sans-serif;
+      text-shadow: 1px 1px black;
+    }
+    iron-image{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      display: block;
+    }
+
+  </style>
+  <template id="">
+
+    <byutv-jsonp
+        id="ajaxpie"
+        auto
+        url="http://acreditacion.celina.com.bo/administrador/index.php/login/login/estadistica1?callback=?"
+        params='{"userId":"1"}'
+        on-response="getResponse"
+        sync
+        last-response="{{ajaxResponse}}"
+        >
+    </byutv-jsonp>
+      <iron-image sizing="cover" preload src="../../images/expo.jpg">
+      </iron-image>
+      <div class="datos">
+        <h1 class="title">FEICOBOL <br><span>2016</span></h1>
+      </div>
+    <!--<div id="piecharts" class="">
+    </div0>-->
+      <div class="puertas">
+        <div class="one">
+          <h3>Puerta <br>1</h3>
+          <p>{{pUno}}</p>
+        </div>
+        <div class="one">
+          <h3>Puerta <br>3</h3>
+          <p>{{pUno}}</p>
+        </div>
+        <div class="one">
+          <h3>Puerta <br>5</h3>
+          <p>{{pUno}}</p>
+        </div>
+        <div class="one">
+          <h3>Puerta <br>7</h3>
+          <p>{{pUno}}</p>
+        </div>
+      </div>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'chart-pie',
+    properties:{
+      pUno : Number,
+      pTres : Number,
+      pCinco : Number,
+      pSiete : Number
+    },
+    ready: function()
+    {
+      var auxUno = 0;
+      var auxTres = 0;
+      var auxCinco = 0;
+      var auxSiete = 0;
+      this.piechart();
+      this.refresh();
+    },
+    refresh: function(){
+         setInterval(function(){
+          this.ajaxpie.generateRequest();
+        }, 4000);
+    },
+    getResponse: function(event){
+      var responses = event.detail.datos_informativos.total_general;
+      this.datos_informativos = responses;
+
+      var pUno = event.detail.datos_grafica.p1;
+      var pTres = event.detail.datos_grafica.p3;
+      var pCinco = event.detail.datos_grafica.p5;
+      var pSiete = event.detail.datos_grafica.p7;
+
+      auxUno = pUno;
+      auxTres = pTres;
+      auxCinco = pCinco;
+      auxSiete = pSiete;
+
+      this.pUno = pUno;
+      this.pTres = pTres;
+      this.pCinco = pCinco;
+      this.pSiete = pSiete;
+    },
+    piechart: function(){
+        $(function () {
+          $('#piecharts').highcharts({
+              chart: {
+                  plotBackgroundColor: null,
+                  plotBorderWidth: null,
+                  plotShadow: false,
+                  type: 'column',
+                  backgroundColor: "transparent",
+                  borderColor: "#000",
+                  borderWidth: 0,
+                  animation: Highcharts.svg, // don't animate in old IE
+                  marginRight: 10,
+                  events: {
+                      load: function () {
+                        var series = this.series[0];
+                        var dataUno = this.series[0].data[0];
+                        var dataTres = this.series[0].data[1];
+                        var dataCinco = this.series[0].data[2];
+                        var dataSiete = this.series[0].data[3];
+
+                          setInterval(function () {
+                            dataUno.y = auxUno;
+                            dataTres.y = auxTres;
+                            dataCinco.y = auxCinco;
+                            dataSiete.y = auxSiete;
+                            series.redraw();
+                          }, 1500);
+                      }
+                  }
+              },
+              title: {
+                  text: ''
+              },
+              tooltip: {
+
+              },
+              plotOptions: {
+
+              },
+              xAxis: {
+                gridLineColor: 'transparent',
+                labels: {
+                   style: {
+                      color: ''
+                   }
+                },
+                lineColor: '',
+                minorGridLineColor: '',
+                tickColor: '',
+                title: {
+                   style: {
+                      color: ''
+
+                   }
+                }
+             },
+             yAxis: {
+                   gridLineColor: 'transparent',
+                   labels: {
+                      style: {
+                         color: ''
+                      }
+                   },
+                   lineColor: '',
+                   minorGridLineColor: '',
+                   tickColor: '',
+                   tickWidth: 1,
+                   title: {
+                      style: {
+                         color: ''
+                      }
+                   }
+                },
+              series: [{
+                  name: 'Puertas',
+                  colorByPoint: false,
+                  data: [{
+                      name: 'Puerta 1',
+                      y: 5000,
+                      color: '#fff',
+                      borderWidth: '0'
+                  }, {
+                      name: 'Puerta 3',
+                      y: 4000,
+                      color:'#fff',
+                      borderWidth: '0'
+                  }, {
+                      name: 'Puerta 5',
+                      y: 2000,
+                      color: '#fff',
+                      borderWidth: '0'
+                  }, {
+                      name: 'Puerta 7',
+                      y: 3000,
+                      color: '#fff',
+                      borderWidth: '0'
+                  }]
+              }]
+          });
+      });
+    }
+  });
+</script>
