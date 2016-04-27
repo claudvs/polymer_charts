@@ -17,8 +17,9 @@
       @apply(--layout-center-justified);
       width: 100%;
       position:absolute;
-      height: 1000px;
+      height: 50%;
       margin-top: 50px;
+      margin-bottom: 50px;
     }
     .title h3{
       font-weight: lighter;
@@ -52,7 +53,29 @@
     .total-categorias ul  li p{
       font-size: 0.7em;
     }
+    @media screen and (max-width: 1500px) and (min-width: 700px) {
+    .datosgrals{
+      margin-top: 100px;
+    }
+    .title h3{
+      font-size: 0.9em;
+    }
+    .total-general{
+      font-size: 0.5em;
+    }
+    .total-categorias ul li p {
+        font-size: 0.3em;
+      }
+    }
+    @media screen and (max-width: 700px) and (min-width: 200px) {
+      .datosgrals{
+        height:50%;
+        width: 50%;
+      }
+      #linechart{
 
+      }
+    }
   </style>
   <template id="">
 
@@ -66,7 +89,7 @@
         last-response="{{ajaxResponse}}"
         >
       </byutv-jsonp>
-      <div id="linechart"style=""></div>
+      <div id="linechart" style="min-width: 100%; height: auto; margin: 0 auto"></div>
 
       <div class="datosgrals">
         <div class="title">

@@ -4,6 +4,8 @@
 <link rel="import" href="../layout-two/layout-two.html">
 <link rel="import" href="../layout-three/layout-three.html">
 <link rel="import" href="../layout-four/layout-four.html">
+
+<link rel="import" href="../layout-five/layout-five.html">
 <link rel="import" href="../chart-line/chart-line.html">
 <dom-module id="claud-background">
 <style is="custom-style">
@@ -37,6 +39,10 @@
   iron-pages div:nth-child(4) {
     background: linear-gradient(#1DC7E7, #7986CB);
   }
+  iron-pages div:nth-child(5) {
+    background: linear-gradient(#1DC7E7, #7986CB);
+  }
+
 </style>
   <template id="">
     <iron-pages selected="0">
@@ -51,6 +57,9 @@
       </div>
       <div>
         <layout-four></layout-four>
+      </div>
+      <div>
+        <layout-five></layout-five>
       </div>
     </iron-pages>
   </template>

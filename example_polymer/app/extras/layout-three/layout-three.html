@@ -16,7 +16,7 @@
     @apply(--layout-center-justified);
     width: 100%;
     position:absolute;
-    height: 1000px;
+    height: 50%;
     margin-top: 50px;
 
   }
@@ -52,6 +52,20 @@
   .total-categorias ul  li p{
     font-size: 0.7em;
   }
+  @media screen and (max-width: 1500px) and (min-width: 700px) {
+  .datosgrals{
+    margin-top: 100px;
+  }
+  .title h3{
+    font-size: 0.9em;
+  }
+  .total-general{
+    font-size: 0.5em;
+  }
+  .total-categorias ul li p {
+      font-size: 0.4em;
+    }
+  }
   </style>
   <template id="">
     <byutv-jsonp
@@ -65,7 +79,7 @@
         >
     </byutv-jsonp>
 
-    <div id="pie" style=""></div>
+    <div id="pie" style="min-width: 100%; height: 400px; margin: 0 auto"></div>
 
     <div class="datosgrals">
       <div class="title">
